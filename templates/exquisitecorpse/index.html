@@ -1,0 +1,37 @@
+{% extends "exquisitecorpse/base.html" %}
+  {% block extra_head %}
+    {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'exquisitecorpse/css/index.css' %}">
+  {% endblock %}
+
+  {% block container_block %}
+    <div class="jumbotron">
+      <h1>Exquisite Corpse</h1>
+      <p>"A method by which a collection of words or images is collectively assembled..."</p>
+    </div>
+
+    <div class="row">
+      <div class="col-md-3">
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+      </div>
+      <div class="col-md-3">
+        <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+      </div>
+      <div class="col-md-3">
+        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+      </div>
+      <div class="col-md-3">
+        <ul class="nav nav-pills nav-stacked">
+          <li class="active"><a href="#">Recent Compositions</a></li>
+          {% if latest_compositions %}
+            {% for composition in latest_compositions %}
+              <li><a href="/compositions/{{ composition.id }}">{{ composition.title }}</a></li>
+            {% endfor %}
+          {% else %}
+            <p>No compositions available.</p>
+          {% endif %}
+        </ul>
+      </div>
+      <div class="clearfix visible-lg"></div>
+    </div>
+  {% endblock %}

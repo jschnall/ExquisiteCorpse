@@ -1,0 +1,11 @@
+{% extends "exquisitecorpse/base.html" %}
+  {% block extra_head %}
+    {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'exquisitecorpse/css/index.css' %}">
+  {% endblock %}
+
+  {% block container_block %}
+    {% for part in composition.part_set.all|dictsort:'created' %}
+        <li>{{ part.text }}</li>
+    {% endfor %}
+  {% endblock %}

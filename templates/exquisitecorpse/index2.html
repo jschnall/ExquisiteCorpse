@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Exquisite Corpse</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">ExquisiteCorpse</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="#">Home</a></li>
+        <li><a href="/compositions">Browse</a></li>
+        <li><a href="#">Join</a></li>
+        <li><a href="#">Create</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#"><span class="glyphicon glyphicon-search"></span></a></li>
+        {% if request.user.is_authenticated %}
+            <li><a href="/accounts/logout/"><span class="glyphicon glyphicon-log-out"></span> {{ request.user.username }}</a></li>
+        {% else %}
+            <!--
+            <li><a href="/accounts/signup"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+            -->
+            <li><a href="/accounts/login"><span class="glyphicon glyphicon-log-in"></span> Log In</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="jumbotron">
+    <h1>Exquisite Corpse</h1>
+    <p>"A method by which a collection of words or images is collectively assembled..."</p>
+  </div>
+
+  <div class="row">
+    <div class="col-md-3">
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+    </div>
+    <div class="col-md-3">
+      <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    </div>
+    <div class="col-md-3">
+      <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+    </div>
+    <div class="col-md-3">
+      <ul class="nav nav-pills nav-stacked">
+        <li class="active"><a href="#">Recent Compositions</a></li>
+        {% if latest_compositions %}
+            {% for composition in latest_compositions %}
+                <li><a href="/compositions/{{ composition.id }}">{{ composition.title }}</a></li>
+            {% endfor %}
+        {% else %}
+            <p>No compositions available.</p>
+        {% endif %}
+      </ul>
+    </div>
+    <div class="clearfix visible-lg"></div>
+  </div>
+</div>
+
+</body>
+</html>
