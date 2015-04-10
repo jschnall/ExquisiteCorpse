@@ -1,3 +1,23 @@
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#composition-likes').click(function() {
+        var catid;
+        catid = $(this).attr("data-catid");
+         $.get('{% url 'corpse:composition_like' composition.pk %}', {category_id: catid}, function(data) {
+                   $('#like_count').html(data);
+                   $('#likes').hide();
+               });
+
+        $('#composition-favorites').click(function() {
+        var catid;
+        catid = $(this).attr("data-catid");
+         $.get('{% url 'corpse:composition_favorite' composition.pk %}', {category_id: catid}, function(data) {
+                   $('#favorite_count').html(data);
+                   $('#favorites').hide();
+               });
+    });
+</script>
+
 <div class="btn-group pull-right">
   {% if user.is_authenticated %}
       <a href="#" class="btn btn-default" id="like-btn">
