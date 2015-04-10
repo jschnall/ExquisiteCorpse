@@ -1,0 +1,38 @@
+// Import Bootstrap Compass integration
+@import "bootstrap-compass";
+
+// Import custom Bootstrap variables
+@import "bootstrap-variables";
+
+// Import Bootstrap for Sass
+@import "bootstrap";
+
+tr.clickable-row { cursor: pointer; }
+
+.list_item_title {
+    text-overflow: ellipsis;
+}
+
+.tab-pane {
+    background: #FFFFFF;
+    border-radius: 0;
+    text-align: left;
+    padding: 16px;
+}
+
+#taglist {
+  display: inline;
+  list-style: none;
+}
+
+#taglist li {
+  display: inline;
+}
+
+#taglist li:after {
+  content: ", ";
+}
+
+#taglist li:last-child:after {
+    content: "";
+}

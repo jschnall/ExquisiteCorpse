@@ -1,11 +1,49 @@
 {% extends "exquisitecorpse/base.html" %}
   {% block extra_head %}
     {% load staticfiles %}
-    <link rel="stylesheet" type="text/css" href="{% static 'exquisitecorpse/css/index.css' %}">
   {% endblock %}
 
   {% block container_block %}
-    {% for part in composition.part_set.all|dictsort:'created' %}
-        <li>{{ part.text }}</li>
-    {% endfor %}
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active"><a href="#text" aria-controls="text" role="tab" data-toggle="tab">Text</a></li>
+      <li role="presentation"><a href="#parts" aria-controls="parts" role="tab" data-toggle="tab">Parts</a></li>
+      <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <div role="tabpanel" class="tab-pane fade in active" id="text">{% include 'exquisitecorpse/composition_text.html' %}</div>
+      <div role="tabpanel" class="tab-pane fade" id="parts">{% include 'exquisitecorpse/part_list.html' %}</div>
+      <div role="tabpanel" class="tab-pane fade" id="settings">{% include 'exquisitecorpse/composition_settings.html' %}</div>
+    </div>
+
+
+    <div class="panel panel-primary">
+      <div class="panel-heading clearfix">
+      <h4 class="panel-title pull-left" style="padding-top: 7.5px;">{{ composition.title|title }}</h4>
+          <div class="btn-group pull-right">
+            <a href="#" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> Like</a>
+            <a href="#" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span> Favorite</a>
+          </div>
+      </div>
+      <div class="panel-body">
+        <dl class="dl-horizontal">
+        {% for part in composition.part_set.all|dictsort:'created' %}
+          <dt><span class="glyphicon glyphicon-user" aria-hidden="true"></span> {{ part.owner.username }}</dt>
+          <dd>{{ part.text }}</dd>
+          <br>
+        {% endfor %}
+        </dl>
+      </div>
+      <!--
+      <div class="panel-footer">
+         <ul id="taglist">
+             {% for user in composition.users.all %}
+                <li>{{ user.username }}</li>
+             {% endfor %}
+         </ul>
+      </div>
+      -->
+    </div>
   {% endblock %}

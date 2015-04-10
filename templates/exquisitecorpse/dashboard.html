@@ -1,52 +1,27 @@
 {% extends 'exquisitecorpse/base.html' %}
-  {% block extra_head %}
-    {% load staticfiles %}
-    <link rel="stylesheet" type="text/css" href="{% static 'exquisitecorpse/css/dashboard.css' %}">
-  {% endblock %}
+{% block container_block %}
+    {% url 'corpse:dashboard' 'queued' as queued_url %}
+    {% url 'corpse:dashboard' 'active' as active_url %}
+    {% url 'corpse:dashboard' 'completed' as completed_url %}
+    {% url 'corpse:dashboard' 'favorites' as favorites_url %}
+    <ul class="nav nav-pills">
+      <li role="presentation" {% if request.get_full_path == queued_url %}class="active"{% endif %}><a href="{{ queued_url }}">Queued</a></li>
+      <li role="presentation" {% if request.get_full_path == active_url %}class="active"{% endif %}><a href="{{ active_url }}">Active</a></li>
+      <li role="presentation" {% if request.get_full_path == completed_url %}class="active"{% endif %}><a href="{{ completed_url }}">Completed</a></li>
+      <li role="presentation" {% if request.get_full_path == favorites_url %}class="active"{% endif %}><a href="{{ favorites_url }}">Favorites</a></li>
+    </ul>
 
-  {% block container_block %}
-    <h1>In Progress</h1>
-    <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Owner</th>
-            <th>Players</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for composition in compositions %}
-            <tr class="clickable-row" data-href="/compositions/{{ composition.id }}">
-              <td>{{ composition.title }}</td>
-              <td>{{ composition.owner.username }}</td>
-              <td>{{ composition.users.count }}</td>
-            </tr>
-          {% empty %}
-            <!-- no entries, show placeholder-->
-          {% endfor %}
-        </tbody>
-      </table>
-
-    <h1>Completed</h1>
-    <table class="table table-hover table-bordered">
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Owner</th>
-            <th>Players</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for composition in compositions %}
-            <tr class="clickable-row" data-href="/compositions/{{ composition.id }}">
-              <td>{{ composition.title }}</td>
-              <td>{{ composition.owner.username }}</td>
-              <td>{{ composition.users.count }}</td>
-            </tr>
-          {% empty %}
-            <!-- no entries, show placeholder-->
-          {% endfor %}
-        </tbody>
-      </table>
-
-  {% endblock %}
+    <br>
+    <div class="list-group">
+    {% for composition in compositions %}
+        {% if request.get_full_path == queued_url %}
+        {% elif request.get_full_path == active_url %}
+        {% elif request.get_full_path == completed_url or request.get_full_path == favorites_url %}
+            {% include 'exquisitecorpse/_composition_item.html' %}
+        {% endif %}
+    {% empty %}
+    <!-- no entries, show placeholder-->
+    <center><h1><small>(No items available)</small></h1></center>
+    {% endfor %}
+    </div>
+{% endblock %}

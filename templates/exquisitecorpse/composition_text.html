@@ -1,0 +1,11 @@
+<div class="btn-group pull-right">
+  <a href="#" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> Like</a>
+  <a href="#" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span> Favorite</a>
+</div>
+<br>
+<br>
+<center><h3>{{ composition.title|title }}</h3></center>
+<br>
+{% for part in composition.part_set.all|dictsort:'created' %}
+  <p>{{ part.text }}</p>
+{% endfor %}

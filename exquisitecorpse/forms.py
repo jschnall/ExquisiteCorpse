@@ -24,11 +24,12 @@ class CompositionForm(ModelForm):
             Fieldset(
                 'Composition Settings',
                 'title',
-                'join_policy',
-                'turns',
+                'theme',
+                #'join_policy',
+                'rounds',
                 'max_users',
                 'min_part_chars',
-                'max_part_chars'
+                'max_part_chars',
             ),
             FormActions (
                 Submit('create', 'Create'),
@@ -40,7 +41,7 @@ class CompositionForm(ModelForm):
 
     class Meta:
         model = Composition
-        fields = ['max_users', 'title', 'turns', 'min_part_chars', 'max_part_chars', 'join_policy']
+        fields = ['max_users', 'title', 'theme', 'rounds', 'min_part_chars', 'max_part_chars', ] #'join_policy'
 
 
 class PartForm(ModelForm):

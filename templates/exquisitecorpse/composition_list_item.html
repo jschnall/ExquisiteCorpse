@@ -1,0 +1,4 @@
+  <a href="{% url 'corpse:composition_details' composition.id %}" class="list-group-item">
+    <h4 class="list-group-item-heading inline-block text-overflow">{{ composition.title }}</h4>
+    <h5 class="list-group-item-text">{{ composition.owner.username }}</h5>
+  </a>

@@ -3,7 +3,9 @@ __author__ = 'jschnall'
 from django.conf import settings
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse_lazy
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, render
+from django.utils import timezone
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
@@ -36,7 +38,7 @@ class CompositionList(ListView):
 
 class AvailableCompositionList(CompositionList):
     def get_queryset(self):
-        return Composition.objects.filter(started__isnull=True).order_by('-updated')
+        return Composition.objects.filter(Q(start_time__isnull=True) | Q(start_time__gt=timezone.now())).order_by('-updated')
 
 
 class CompletedCompositionList(CompositionList):
@@ -44,27 +46,32 @@ class CompletedCompositionList(CompositionList):
         return Composition.objects.filter(completed__isnull=False).order_by('-completed')
 
 
-class UserQueuedCompositionList(CompositionList):
-    def get_queryset(self):
-        return Composition.objects.filter(users=self.request.user, started__isnull=True).order_by('-updated')
-
-
-class UserActiveCompositionList(CompositionList):
-    def get_queryset(self):
-        return Composition.objects.filter(users=self.request.user, started__isnull=False, completed__isnull=True).order_by('-updated')
-
-
-class UserCompletedCompositionList(CompositionList):
-        def get_queryset(self):
-            return Composition.objects.filter(users=self.request.user, completed__isnull=False).order_by('-completed')
-
-
 class Dashboard(LoginRequiredMixin, ListView):
     template_name = 'exquisitecorpse/dashboard.html'
-    context_object_name = 'my_compositions'
+    context_object_name = 'compositions'
+
+    QUEUED = 'queued'
+    ACTIVE = 'active'
+    COMPLETED = 'completed'
+    FAVORITES = 'favorites'
+    CATEGORY_CHOICES = (
+        (QUEUED, 'Queued'),
+        (ACTIVE, 'Active'),
+        (COMPLETED, 'Completed'),
+        (FAVORITES, 'Favorites'),
+    )
 
     def get_queryset(self):
-        return Composition.objects.filter(users=self.request.user).order_by('-updated')
+        category = self.kwargs.get('category', None)
+
+        if category == self.QUEUED:
+            return Composition.objects.filter(users=self.request.user).filter(Q(start_time__isnull=True) | Q(start_time__gt=timezone.now())).order_by('-updated')
+        elif category == self.ACTIVE:
+            return Composition.objects.filter(users=self.request.user, start_time__gt=timezone.now(), completed__isnull=True).order_by('-updated')
+        elif category == self.COMPLETED:
+            return Composition.objects.filter(users=self.request.user, completed__isnull=False).order_by('-completed')
+        elif category == self.FAVORITES:
+            return Composition.objects.filter(favorites=self.request.user).order_by('-updated')
 
 
 class CompositionDetails(DetailView):
@@ -79,7 +86,10 @@ class CompositionCreate(AjaxableResponseMixin, LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
-        return super(CompositionCreate, self).form_valid(form)
+        form.instance.active_user = self.request.user
+        response = super(CompositionCreate, self).form_valid(form)
+        form.instance.users.add(self.request.user)
+        return response
 
     def get_success_url(self):
         return reverse_lazy('corpse:composition_details', args=(self.object.pk,))
@@ -87,8 +97,17 @@ class CompositionCreate(AjaxableResponseMixin, LoginRequiredMixin, CreateView):
 
 class CompositionUpdate(LoginRequiredMixin, IsOwnerMixin, UpdateView):
     model = Composition
-    fields = ['max_users', 'title', 'turns', 'min_part_chars', 'max_part_chars', 'join_policy', 'public_result']
-    #template_name = 'exquisitecorpse/composition_update.html'
+    template_name = 'exquisitecorpse/composition_create.html'
+    form_class = CompositionForm
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        response = super(CompositionCreate, self).form_valid(form)
+        form.instance.users.add(self.request.user)
+        return response
+
+    def get_success_url(self):
+        return reverse_lazy('corpse:composition_details', args=(self.object.pk,))
 
 
 class CompositionDelete(LoginRequiredMixin, IsOwnerMixin, DeleteView):

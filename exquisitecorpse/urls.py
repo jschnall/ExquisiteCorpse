@@ -15,6 +15,7 @@ urlpatterns = patterns('',
     url(r'^compositions/(?P<pk>\d+)/update/$', views.CompositionUpdate.as_view(), name='composition_update'),
     url(r'^compositions/(?P<pk>\d+)/delete/$', views.CompositionDelete.as_view(), name='composition_delete'),
     url(r'^dashboard/$', views.Dashboard.as_view(), name='dashboard'),
+    url(r'^dashboard/(?P<category>\w+)/$', views.Dashboard.as_view(), name='dashboard'),
     url(r'^parts/add/$', views.PartCreate.as_view(), name='part_create'),
     url(r'^parts/(?P<pk>\d+)/$', views.PartDetails.as_view(), name='part_details'),
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

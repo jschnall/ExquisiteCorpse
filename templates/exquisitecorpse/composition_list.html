@@ -1,28 +1,11 @@
 {% extends 'exquisitecorpse/base.html' %}
   {% block extra_head %}
     {% load staticfiles %}
-    <link rel="stylesheet" type="text/css" href="{% static 'exquisitecorpse/css/browse.css' %}">
   {% endblock %}
 
   {% block container_block %}
-    <table class="table table-hover table-bordered">
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Owner</th>
-            <th>Players</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for composition in compositions %}
-            <tr class="clickable-row" data-href="/compositions/{{ composition.id }}">
-              <td>{{ composition.title }}</td>
-              <td>{{ composition.owner.username }}</td>
-              <td>{{ composition.users.count }}</td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-
-      {% include 'exquisitecorpse/_pager.html' %}
+      {% for composition in compositions %}
+        {% include 'exquisitecorpse/composition_list_item.html' %}
+      {% endfor %}
+      {% include 'exquisitecorpse/pager.html' %}
   {% endblock %}
