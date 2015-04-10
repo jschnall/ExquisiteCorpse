@@ -1,6 +1,24 @@
 <div class="btn-group pull-right">
-  <a href="#" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> Like</a>
-  <a href="#" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span> Favorite</a>
+  {% if user.is_authenticated %}
+      <a href="#" class="btn btn-default" id="like-btn">
+          <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> {{ composition.likes.count }} Likes
+      </a>
+      <a href="" class="btn btn-default" id="favorite-btn">
+        {% if request.user in composition.favorites.all %}
+          <span class="glyphicon glyphicon-star" aria-hidden="true"></span> Unfavorite
+        {% else %}
+          <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span> Favorite
+        {% endif %}
+      </a>
+  {% else %}
+    <!-- Disable buttons -- >
+      <a href="#" class="btn btn-default disabled">
+          <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> {{ composition.likes.count }} Likes
+      </a>
+      <a href="" class="btn btn-default disabled">
+          <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span> Favorite
+      </a>
+  {% endif %}
 </div>
 <br>
 <br>

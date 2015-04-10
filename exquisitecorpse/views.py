@@ -1,22 +1,28 @@
 __author__ = 'jschnall'
 
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse_lazy
 from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
-from django.views.generic import DetailView, ListView
-from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django.views.generic import DetailView, ListView, TemplateView
+from django.views.generic.edit import View, CreateView, DeleteView, UpdateView
 
 from api.models import *
 from forms import *
 from mixins import *
 
-def index(request):
-    latest_compositions = Composition.objects.filter(completed__isnull=False).order_by('-completed')[:5]
-    context = {'latest_compositions': latest_compositions}
-    return render(request, 'exquisitecorpse/index.html', context)
+class IndexView(TemplateView):
+    template_name = 'exquisitecorpse/index.html'
+
+    def get_context_data(self, **kwargs):
+        latest_compositions = Composition.objects.filter(completed__isnull=False).order_by('-completed')[:5]
+        context = super(IndexView, self).get_context_data(**kwargs)
+        context['latest_compositions'] = latest_compositions
+        return context
 
 
 class CompositionList(ListView):
@@ -79,7 +85,7 @@ class CompositionDetails(DetailView):
     template_name = 'exquisitecorpse/composition_details.html'
 
 
-class CompositionCreate(AjaxableResponseMixin, LoginRequiredMixin, CreateView):
+class CompositionCreate(LoginRequiredMixin, CreateView):
     model = Composition
     template_name = 'exquisitecorpse/composition_create.html'
     form_class = CompositionForm
@@ -110,6 +116,35 @@ class CompositionUpdate(LoginRequiredMixin, IsOwnerMixin, UpdateView):
         return reverse_lazy('corpse:composition_details', args=(self.object.pk,))
 
 
+class ToggleUserM2MFieldView(LoginRequiredMixin, AjaxableResponseMixin, View):
+    '''
+    Toggles the current user in an M2M field
+    '''
+
+    def post(self, request, **kwargs):
+        try:
+            id = kwargs.get('pk', None)
+            obj = self.model.objects.get(pk=id)
+            m2m_field = getattr(obj, self.field)
+            if request.user in m2m_field.all():
+                m2m_field.remove(request.user)
+            else:
+                m2m_field.add(request.user)
+            return HttpResponse(m2m_field)
+        except:
+            raise ImproperlyConfigured('Valid "model" and M2M "field" are required.')
+
+
+class CompositionLike(ToggleUserM2MFieldView):
+    model = Composition
+    field = 'likes'
+
+
+class CompositionFavorite(ToggleUserM2MFieldView):
+    model = Composition
+    field = 'favorites'
+
+
 class CompositionDelete(LoginRequiredMixin, IsOwnerMixin, DeleteView):
     model = Composition
     success_url = reverse_lazy('composition_list')
@@ -131,3 +166,8 @@ class PartCreate(CreateView):
 
     def get_success_url(self):
         return reverse_lazy('corpse:part_details', args=(self.object.pk,))
+
+
+class PartLike(ToggleUserM2MFieldView):
+    model = Part
+    field = 'likes'
