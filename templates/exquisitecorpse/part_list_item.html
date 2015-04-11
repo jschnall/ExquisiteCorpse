@@ -1,9 +1,15 @@
     <div class="panel panel-primary">
       <div class="panel-heading clearfix">
         <h4 class="panel-title pull-left" style="padding-top: 7.5px;">
-          <span class="glyphicon glyphicon-user" aria-hidden="true"></span> {{ part.owner.username }}
+          <span class="fa fa-user" aria-hidden="true"></span> {{ part.owner.username }}
         </h4>
-        <a href="#" class="btn btn-default btn-sm pull-right"><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> Like</a>
+
+        {% if user.is_authenticated %}
+          <button type="button" class="btn btn-default pull-right likes" data-pk="{{ part.id }}">
+            <span id="like-icon-{{ part.pk }}" class="fa {% if request.user in part.likes.all %}fa-thumbs-up{% else %}fa-thumbs-o-up{% endif %}" aria-hidden="true"></span>
+            <span id="like-count-{{ part.pk }}">{{ part.likes.count }}</span> Likes
+          </button>
+        {% endif %}
       </div>
       <div class="panel-body">
         {{ part.text }}

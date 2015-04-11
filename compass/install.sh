@@ -12,4 +12,4 @@ cd $BASE  # the directory where this script lives
 gem install -i Gem compass
 gem install -i Gem compass-susy-plugin
 gem install -i Gem bootstrap-sass
-gem install -i Gem bundler
+gem install -i Gem font-awesome-sass 

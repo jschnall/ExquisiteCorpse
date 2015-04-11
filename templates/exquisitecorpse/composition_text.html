@@ -1,43 +1,65 @@
 <script type="text/javascript">
-    $(document).ready(function(){
-        $('#composition-likes').click(function() {
-        var catid;
-        catid = $(this).attr("data-catid");
-         $.get('{% url 'corpse:composition_like' composition.pk %}', {category_id: catid}, function(data) {
-                   $('#like_count').html(data);
-                   $('#likes').hide();
-               });
+    $(document).ready(function() {
+        $("#likes").click(function(e) {
+            e.preventDefault();
+            var pk = $(this).attr("data-pk");
+            var data = {
+                "pk": pk
+            }
+            $.ajax({
+                "type": "POST",
+                "dataType": "json",
+                "url": "{% url 'corpse:composition_like' %}",
+                "data": data,
+                "success": function(result) {
+                    //console.log(result["likes"]);
+                    $("#like-count").html(result["count"]);
+                    if (result["exists"]) {
+                        $("#like-icon").removeClass("fa-thumbs-o-up").addClass("fa-thumbs-up");
+                    } else {
+                        $("#like-icon").removeClass("fa-thumbs-up").addClass("fa-thumbs-o-up");
+                    }
 
-        $('#composition-favorites').click(function() {
-        var catid;
-        catid = $(this).attr("data-catid");
-         $.get('{% url 'corpse:composition_favorite' composition.pk %}', {category_id: catid}, function(data) {
-                   $('#favorite_count').html(data);
-                   $('#favorites').hide();
-               });
+                },
+            });
+        });
+
+        $("#favorites").click(function(e) {
+            e.preventDefault();
+            var pk = $(this).attr("data-pk");
+            var data = {
+                "pk": pk
+            }
+            $.ajax({
+                "type": "POST",
+                "dataType": "json",
+                "url": "{% url 'corpse:composition_favorite' %}",
+                "data": data,
+                "success": function(result) {
+                    console.log(result["exists"]);
+                    if (result["exists"]) {
+                        $("#favorite-icon").removeClass("fa-star-o").addClass("fa-star");
+                        //$("#favorite-exists").html("Unfavorite");
+                    } else {
+                        $("#favorite-icon").removeClass("fa-star").addClass("fa-star-o");
+                        //$("#favorite-exists").html("Favorite");
+                    }
+                },
+            });
+        });
     });
 </script>
-
+{% csrf_token %}
 <div class="btn-group pull-right">
   {% if user.is_authenticated %}
-      <a href="#" class="btn btn-default" id="like-btn">
-          <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> {{ composition.likes.count }} Likes
-      </a>
-      <a href="" class="btn btn-default" id="favorite-btn">
-        {% if request.user in composition.favorites.all %}
-          <span class="glyphicon glyphicon-star" aria-hidden="true"></span> Unfavorite
-        {% else %}
-          <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span> Favorite
-        {% endif %}
-      </a>
-  {% else %}
-    <!-- Disable buttons -- >
-      <a href="#" class="btn btn-default disabled">
-          <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> {{ composition.likes.count }} Likes
-      </a>
-      <a href="" class="btn btn-default disabled">
-          <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span> Favorite
-      </a>
+      <button type="button" class="btn btn-default" id="likes" data-pk="{{ composition.id }}">
+          <span id="like-icon" class="fa {% if request.user in composition.likes.all %}fa-thumbs-up{% else %}fa-thumbs-o-up{% endif %}" aria-hidden="true"></span>
+          <span id="like-count">{{ composition.likes.count }}</span> Likes
+      </button>
+      <button class="btn btn-default" id="favorites" data-pk="{{ composition.id }}">
+          <span id="favorite-icon" class="fa {% if request.user in composition.favorites.all %}fa-star{% else %}fa-star-o{% endif %}" aria-hidden="true"></span>
+          <span id="favorite-exists">Favorite</span>
+      </button>
   {% endif %}
 </div>
 <br>

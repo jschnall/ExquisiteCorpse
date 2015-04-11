@@ -17,7 +17,7 @@
         {% if request.get_full_path == queued_url %}
         {% elif request.get_full_path == active_url %}
         {% elif request.get_full_path == completed_url or request.get_full_path == favorites_url %}
-            {% include 'exquisitecorpse/_composition_item.html' %}
+            {% include 'exquisitecorpse/composition_list_item.html' %}
         {% endif %}
     {% empty %}
     <!-- no entries, show placeholder-->

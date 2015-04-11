@@ -5,11 +5,13 @@ from django.core.exceptions import ImproperlyConfigured
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse_lazy
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
 from django.views.generic import DetailView, ListView, TemplateView
 from django.views.generic.edit import View, CreateView, DeleteView, UpdateView
+
+import json
 
 from api.models import *
 from forms import *
@@ -121,17 +123,24 @@ class ToggleUserM2MFieldView(LoginRequiredMixin, AjaxableResponseMixin, View):
     Toggles the current user in an M2M field
     '''
 
-    def post(self, request, **kwargs):
+    def post(self, request):
         try:
-            id = kwargs.get('pk', None)
-            obj = self.model.objects.get(pk=id)
+            pk = request.POST['pk']
+            print self.model
+            print self.field
+            print pk
+            obj = self.model.objects.get(pk=pk)
+            print 'here1'
             m2m_field = getattr(obj, self.field)
-            if request.user in m2m_field.all():
+            exists = request.user in m2m_field.all()
+            print 'here2'
+            if exists:
                 m2m_field.remove(request.user)
             else:
                 m2m_field.add(request.user)
-            return HttpResponse(m2m_field)
+            return JsonResponse({'count': m2m_field.count(), 'exists': not exists})
         except:
+            print 'here3'
             raise ImproperlyConfigured('Valid "model" and M2M "field" are required.')
 
 
