@@ -128,19 +128,15 @@ class ToggleUserM2MFieldView(LoginRequiredMixin, AjaxableResponseMixin, View):
             pk = request.POST['pk']
             print self.model
             print self.field
-            print pk
             obj = self.model.objects.get(pk=pk)
-            print 'here1'
             m2m_field = getattr(obj, self.field)
             exists = request.user in m2m_field.all()
-            print 'here2'
             if exists:
                 m2m_field.remove(request.user)
             else:
                 m2m_field.add(request.user)
             return JsonResponse({'count': m2m_field.count(), 'exists': not exists})
         except:
-            print 'here3'
             raise ImproperlyConfigured('Valid "model" and M2M "field" are required.')
 
 

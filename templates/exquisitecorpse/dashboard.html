@@ -1,5 +1,10 @@
 {% extends 'exquisitecorpse/base.html' %}
 {% block container_block %}
+    <div class="alert alert-info alert-dismissible" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <strong>Josh</strong> likes <a href="{% url 'corpse:composition_details' 21 %}" class="alert-link">Composition Name</a>
+    </div>
+
     {% url 'corpse:dashboard' 'queued' as queued_url %}
     {% url 'corpse:dashboard' 'active' as active_url %}
     {% url 'corpse:dashboard' 'completed' as completed_url %}
