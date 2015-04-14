@@ -126,8 +126,6 @@ class ToggleUserM2MFieldView(LoginRequiredMixin, AjaxableResponseMixin, View):
     def post(self, request):
         try:
             pk = request.POST['pk']
-            print self.model
-            print self.field
             obj = self.model.objects.get(pk=pk)
             m2m_field = getattr(obj, self.field)
             exists = request.user in m2m_field.all()
