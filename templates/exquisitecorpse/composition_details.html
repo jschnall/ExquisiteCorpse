@@ -8,13 +8,13 @@
     <ul class="nav nav-tabs" role="tablist">
       <li role="presentation" class="active"><a href="#text" aria-controls="text" role="tab" data-toggle="tab">Text</a></li>
       <li role="presentation"><a href="#parts" aria-controls="parts" role="tab" data-toggle="tab">Parts</a></li>
-      <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>
+      <li role="presentation"><a href="#about" aria-controls="about" role="tab" data-toggle="tab">About</a></li>
     </ul>
 
     <!-- Tab panes -->
     <div class="tab-content">
       <div role="tabpanel" class="tab-pane fade in active" id="text">{% include 'exquisitecorpse/composition_text.html' %}</div>
       <div role="tabpanel" class="tab-pane fade" id="parts">{% include 'exquisitecorpse/part_list.html' %}</div>
-      <div role="tabpanel" class="tab-pane fade" id="settings">{% include 'exquisitecorpse/composition_settings.html' %}</div>
+      <div role="tabpanel" class="tab-pane fade" id="about">{% include 'exquisitecorpse/composition_about.html' %}</div>
     </div>
   {% endblock %}

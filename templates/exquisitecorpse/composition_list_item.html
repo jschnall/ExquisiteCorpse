@@ -1,4 +1,6 @@
   <a href="{% url 'corpse:composition_details' composition.id %}" class="list-group-item">
+    <span class="badge"><span class="fa fa-star" aria-hidden="true"></span> {{ composition.favorites.count }} </span>
+    <span class="badge"><span class="fa fa-thumbs-up" aria-hidden="true"></span> {{ composition.likes.count }} </span>
     <h4 class="list-group-item-heading inline-block text-overflow">{{ composition.title }}</h4>
     <h5 class="list-group-item-text">{{ composition.owner.username }}</h5>
   </a>

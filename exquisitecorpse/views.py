@@ -69,6 +69,14 @@ class Dashboard(LoginRequiredMixin, ListView):
         (FAVORITES, 'Favorites'),
     )
 
+    def get_context_data(self, **kwargs):
+        context = super(Dashboard, self).get_context_data(**kwargs)
+        context['queued_count'] = Composition.objects.filter(users=self.request.user).filter(Q(start_time__isnull=True) | Q(start_time__gt=timezone.now())).count()
+        context['active_count'] = Composition.objects.filter(users=self.request.user, start_time__gt=timezone.now(), completed__isnull=True).count()
+        context['completed_count'] = Composition.objects.filter(users=self.request.user, completed__isnull=False).count()
+        context['favorite_count'] = Composition.objects.filter(favorites=self.request.user).count()
+        return context
+
     def get_queryset(self):
         category = self.kwargs.get('category', None)
 

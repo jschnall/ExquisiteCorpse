@@ -1,0 +1,73 @@
+<div class="row">
+    <div class="col-sm-12">
+        {% if request.user.is_authenticated %}
+            {% if not composition.start_time %}
+            <!-- Game hasn't started yet -->
+                {% if request.user == composition.owner %}
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary">
+                            <span class="fa fa-pencil" aria-hidden="true"></span> Start Game
+                        </button>
+                        <button type="button" class="btn btn-default">
+                            <span class="fa fa-user-plus" aria-hidden="true"></span> Invite
+                        </button>
+                        <button type="button" class="btn btn-default">
+                            <span class="fa fa-trash" aria-hidden="true"></span> Delete
+                        </button>
+                    </div>
+                {% elif request.user in composition.users.all %}
+                    <button type="button" class="btn btn-primary">Quit Game</button>
+                {% else %}
+                    <button type="button" class="btn btn-primary">Join Game</button>
+                {% endif %}
+            {% else %}
+                <!-- Game has started -->
+                {% if request.user == composition.active_user %}
+                    <button type="button" class="btn btn-primary">
+                        <span class="fa fa-pencil" aria-hidden="true"></span> Your turn
+                    </button>
+                {% else %}
+                    <button type="button" class="btn disabled">
+                        <span class="fa fa-pencil" aria-hidden="true"></span> {{ composition.active_user.username }}'s turn
+                    </button>
+
+                {% endif %}
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+
+<br>
+<br>
+
+<div class="row">
+    <!-- TODO: single line ellipsized, click to expand -->
+    <div class="col-sm-2">Players ({{ composition.users.count }}): </div>
+    <div class="col-sm-10 text-muted">
+        {{ composition.users.first }}
+        {% for user in composition.users.all|slice:"1:" %}
+            , {{ user }}
+        {% endfor %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-2">Rounds:</div>
+    <div class="col-sm-10 text-muted">{{ composition.rounds }}</div>
+</div>
+
+<div class="row">
+    <div class="col-sm-2">Rounds:</div>
+    <div class="col-sm-10 text-muted">{{ composition.rounds }}</div>
+</div>
+
+<div class="row">
+    <div class="col-sm-2">Min part size:</div>
+    <div class="col-sm-10 text-muted">{{ composition.min_part_chars }}</div>
+</div>
+
+<div class="row">
+    <div class="col-sm-2">Max part size:</div>
+    <div class="col-sm-10 text-muted">{{ composition.max_part_chars }}</div>
+</div>
+

@@ -22,7 +22,7 @@ class CompositionForm(ModelForm):
         self.helper.field_class = 'col-lg-8'
         self.helper.layout = Layout(
             Fieldset(
-                'Composition Settings',
+                'New Composition',
                 'title',
                 'theme',
                 #'join_policy',

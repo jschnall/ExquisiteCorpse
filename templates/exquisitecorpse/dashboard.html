@@ -10,10 +10,18 @@
     {% url 'corpse:dashboard' 'completed' as completed_url %}
     {% url 'corpse:dashboard' 'favorites' as favorites_url %}
     <ul class="nav nav-pills">
-      <li role="presentation" {% if request.get_full_path == queued_url %}class="active"{% endif %}><a href="{{ queued_url }}">Queued</a></li>
-      <li role="presentation" {% if request.get_full_path == active_url %}class="active"{% endif %}><a href="{{ active_url }}">Active</a></li>
-      <li role="presentation" {% if request.get_full_path == completed_url %}class="active"{% endif %}><a href="{{ completed_url }}">Completed</a></li>
-      <li role="presentation" {% if request.get_full_path == favorites_url %}class="active"{% endif %}><a href="{{ favorites_url }}">Favorites</a></li>
+      <li role="presentation" {% if request.get_full_path == queued_url %}class="active"{% endif %}>
+          <a href="{{ queued_url }}">Queued <span class="badge">{{ queued_count }}</span></a>
+      </li>
+      <li role="presentation" {% if request.get_full_path == active_url %}class="active"{% endif %}>
+          <a href="{{ active_url }}">Active <span class="badge">{{ active_count }}</span></a>
+      </li>
+      <li role="presentation" {% if request.get_full_path == completed_url %}class="active"{% endif %}>
+          <a href="{{ completed_url }}">Completed <span class="badge">{{ completed_count }}</span></a>
+      </li>
+      <li role="presentation" {% if request.get_full_path == favorites_url %}class="active"{% endif %}>
+          <a href="{{ favorites_url }}">Favorites <span class="badge">{{ favorite_count }}</span></a>
+      </li>
     </ul>
 
     <br>

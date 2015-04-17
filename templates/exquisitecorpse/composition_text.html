@@ -51,21 +51,43 @@
 </script>
 {% csrf_token %}
 <div class="btn-group pull-right">
-  {% if user.is_authenticated %}
-      <button type="button" class="btn btn-default" id="likes" data-pk="{{ composition.id }}">
-          <span id="like-icon" class="fa {% if request.user in composition.likes.all %}fa-thumbs-up{% else %}fa-thumbs-o-up{% endif %}" aria-hidden="true"></span>
-          <span id="like-count">{{ composition.likes.count }}</span> Likes
-      </button>
-      <button class="btn btn-default" id="favorites" data-pk="{{ composition.id }}">
-          <span id="favorite-icon" class="fa {% if request.user in composition.favorites.all %}fa-star{% else %}fa-star-o{% endif %}" aria-hidden="true"></span>
-          <span id="favorite-exists">Favorite</span>
-      </button>
-  {% endif %}
+    {% if user.is_authenticated %}
+        <button type="button" class="btn btn-default" id="likes" data-pk="{{ composition.id }}">
+            <span id="like-icon" class="fa {% if request.user in composition.likes.all %}fa-thumbs-up{% else %}fa-thumbs-o-up{% endif %}" aria-hidden="true"></span>
+            <span id="like-count">{{ composition.likes.count }}</span> Likes
+        </button>
+        <button class="btn btn-default" id="favorites" data-pk="{{ composition.id }}">
+            <span id="favorite-icon" class="fa {% if request.user in composition.favorites.all %}fa-star{% else %}fa-star-o{% endif %}" aria-hidden="true"></span>
+            <span id="favorite-exists">Favorite</span>
+        </button>
+    {% endif %}
+    <div class="btn-group">
+        <button class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="fa fa-share-alt"></span> Share</button>
+        <ul class="dropdown-menu" role="menu">
+            <li role="presentation">
+                <a role="menuitem" tabindex="-1" href="#"><span style="color:#3b5998;" class="fa fa-fw fa-lg fa-facebook" aria-hidden="true"></span> Facebook</a>
+            </li>
+            <li role="presentation">
+                <a role="menuitem" tabindex="-1" href="#"><span style="color:#dd4b39;" class="fa fa-fw fa-lg fa-google-plus" aria-hidden="true"></span> Google+</a>
+            </li>
+            <li role="presentation">
+                <a role="menuitem" tabindex="-1" href="#"><span style="color:#55acee;" class="fa fa-fw fa-lg fa-twitter" aria-hidden="true"></span> Twitter</a>
+            </li>
+            <li role="presentation">
+                <a role="menuitem" tabindex="-1" href="#"><span style="color:#c92228;" class="fa fa-fw fa-lg fa-pinterest" aria-hidden="true"></span> Pinterest</a>
+            </li>
+            <li role="presentation">
+                <a role="menuitem" tabindex="-1" href="#"><span class="fa fa-fw fa-lg fa-envelope-o" aria-hidden="true"></span> Email</a>
+            </li>
+        </ul>
+    </div>
+</div>
+    </div>
 </div>
 <br>
 <br>
 <center><h3>{{ composition.title|title }}</h3></center>
 <br>
 {% for part in composition.part_set.all|dictsort:'created' %}
-  <p>{{ part.text }}</p>
+    <p>{{ part.text }}</p>
 {% endfor %}
