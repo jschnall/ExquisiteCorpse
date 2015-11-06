@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.forms import ModelForm
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Button, Submit, Layout, Fieldset
+from crispy_forms.layout import Button, Submit, Layout, Field, Fieldset
 from crispy_forms.bootstrap import FormActions
 
 from api.models import Composition, Part
@@ -47,9 +47,9 @@ class CompositionForm(ModelForm):
 class PartForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
-        super(CompositionForm, self).__init__(*args, **kwargs)
+        super(PartForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)
-        self.helper.form_id = 'id-compositionForm'
+        self.helper.form_id = 'id-partForm'
         self.helper.form_method = 'POST'
         self.helper.form_class = 'form-horizontal'
         self.helper.label_class = 'col-lg-2'
@@ -59,11 +59,8 @@ class PartForm(ModelForm):
                                      css_class='btn-default',
                                      onclick='window.location.href="{}"'.format(reverse('corpse:dashboard'))))
         self.helper.layout = Layout(
-            Fieldset(
-                'Add text, and a segue for the next player',
-                'text',
-                'segue',
-            ),
+            Field('text', id="text-field", title="Text"),
+            Field('segue', id="segue-field", title="Segue"),
         )
 
     class Meta:

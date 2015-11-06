@@ -1,12 +1,10 @@
 {% extends "exquisitecorpse/base.html" %}
 {% load crispy_forms_tags %}
 
-  {% block extra_head %}
-    {% load staticfiles %}
-  {% endblock %}
+    {% block extra_head %}
+        {% load staticfiles %}
+    {% endblock %}
 
-  {% block container_block %}
-    <form class="form-horizontal" action="{% url 'corpse:composition_create' %}" method="post">
-      {% crispy form %}
-    </form>
-  {% endblock %}
+    {% block container_block %}
+        {% crispy form %}
+    {% endblock %}

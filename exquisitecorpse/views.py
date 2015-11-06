@@ -6,10 +6,17 @@ from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse_lazy
 from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
 from django.views.generic import DetailView, ListView, TemplateView
 from django.views.generic.edit import View, CreateView, DeleteView, UpdateView
+
+from rest_framework import viewsets
+from rest_framework import mixins
+from rest_framework import renderers
+from rest_framework.response import Response
+
+import serializers
+
 
 import json
 
@@ -146,6 +153,67 @@ class ToggleUserM2MFieldView(LoginRequiredMixin, AjaxableResponseMixin, View):
             raise ImproperlyConfigured('Valid "model" and M2M "field" are required.')
 
 
+class CompositionDelete(LoginRequiredMixin, IsOwnerMixin, DeleteView):
+    model = Composition
+    success_url = reverse_lazy('composition_list')
+    #template_name = 'exquisitecorpse/composition_delete.html'
+
+
+class PartDetails(DetailView):
+    model = Composition
+    template_name = 'exquisitecorpse/part_details.html'
+
+
+class PartCreate(LoginRequiredMixin, CreateView):
+    model = Part
+    template_name = 'exquisitecorpse/part_create.html'
+    form_class = PartForm
+
+    def get_context_data(self, **kwargs):
+        composition_id = self.kwargs.get('pk', None)
+        composition = Composition.objects.get(pk=composition_id)
+        context = super(PartCreate, self).get_context_data(**kwargs)
+        context['composition'] = composition
+        return context
+
+    def form_valid(self, form):
+        composition_id = self.kwargs.get('pk', None)
+        form.instance.composition = Composition.objects.get(pk=composition_id)
+        form.instance.owner = self.request.user
+        return super(PartCreate, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('corpse:part_details', args=(self.object.pk,))
+
+
+'''
+class PartViewSet(mixins.ListModelMixin,
+                  mixins.CreateModelMixin,
+                  mixins.RetrieveModelMixin,
+                  viewsets.GenericViewSet):
+    queryset = Part.objects.all()
+    renderer_classes = (renderers.TemplateHTMLRenderer,)
+    template_name = 'exquisitecorpse/part_create.html'
+    form_class = PartForm
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer()
+        if serializer.is_valid():
+            serializer.save(owner=self.request.user)
+            return HttpResponse(status=201)
+        return HttpResponse(status=400)
+
+    def retrieve(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return Response({'part': self.object}, template_name='exquisitecorpse/part_details.html')
+'''
+
+# Ajax
+class PartLike(ToggleUserM2MFieldView):
+    model = Part
+    field = 'likes'
+
+
 class CompositionLike(ToggleUserM2MFieldView):
     model = Composition
     field = 'likes'
@@ -156,29 +224,3 @@ class CompositionFavorite(ToggleUserM2MFieldView):
     field = 'favorites'
 
 
-class CompositionDelete(LoginRequiredMixin, IsOwnerMixin, DeleteView):
-    model = Composition
-    success_url = reverse_lazy('composition_list')
-    #template_name = 'exquisitecorpse/composition_delete.html'
-
-
-class PartDetails(DetailView):
-    model = Part
-    #template_name = 'exquisitecorpse/part_details.html'
-
-
-class PartCreate(CreateView):
-    model = Part
-    #template_name = 'exquisitecorpse/part_create.html'
-
-    def form_valid(self, form):
-        form.instance.owner = self.request.user
-        return super(PartCreate, self).form_valid(form)
-
-    def get_success_url(self):
-        return reverse_lazy('corpse:part_details', args=(self.object.pk,))
-
-
-class PartLike(ToggleUserM2MFieldView):
-    model = Part
-    field = 'likes'

@@ -100,6 +100,7 @@ INSTALLED_APPS = (
     'allauth.socialaccount',
     'allauth.socialaccount.providers.facebook',
     #'allauth.socialaccount.providers.google',
+    'corsheaders',
     'api',
     'exquisitecorpse'
 )
@@ -112,6 +113,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 )
 
 ROOT_URLCONF = 'mysite.urls'
@@ -182,6 +185,9 @@ REST_FRAMEWORK = {
     'PAGINATE_BY_PARAM': 'page_size',  # Allow client to override, using `?page_size=xxx`.
     'MAX_PAGINATE_BY': 100             # Maximum limit allowed when using `?page_size=xxx`.
 }
+
+CORS_ORIGIN_WHITELIST = (
+)
 
 EXQUISITE_CORPSE = {
     'PAGINATE_BY': 10,

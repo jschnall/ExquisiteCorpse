@@ -1,0 +1,24 @@
+{% extends "exquisitecorpse/base.html" %}
+{% load crispy_forms_tags %}
+
+    {% block extra_head %}
+        {% load staticfiles %}
+    {% endblock %}
+
+    {% block container_block %}
+        <h4><center>{{ composition.title }}</center></h4>
+
+        <div class="row pull-right">
+            <div class="col-xs-12 text-muted pull-right" >Round {{ composition.current_round }} of {{ composition.rounds }}</div>
+        </div>
+
+        </br>
+        </br>
+
+        <div class="row">
+            <div class="col-xs-12"><h5>...{{ composition.newest_part.segue }}</h5></div>
+        </div>
+        </br>
+
+        {% crispy form %}
+  {% endblock %}

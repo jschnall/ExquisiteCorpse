@@ -94,7 +94,9 @@ class Composition(models.Model):
         return self.users.first()
 
     def current_round(self):
-        self.part_set.count() // self.users.count() + 1
+        if self.part_set:
+            self.part_set.count() // self.users.count() + 1
+        return 1
 
     def __unicode__(self):
         return self.title + ' (' + str(self.pk) + ')'
