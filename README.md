@@ -8,7 +8,7 @@
 - pip install virtualenv
 
 ####Create a new virtual environment
-- cd <my_project_folder>
+- cd [my_project_folder]
 - virtualenv venv
 
 ####Launch venv and install requirements
