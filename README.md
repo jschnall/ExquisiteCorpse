@@ -9,8 +9,8 @@
 
 ####Create a new virtual environment
 - cd [my_project_folder]
-- virtualenv venv
+- virtualenv env
 
-####Launch venv and install requirements
-- source venv/bin/activate
+####Launch env and install requirements
+- source env/bin/activate
 - pip install -r requirements.txt
